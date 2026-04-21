@@ -1,0 +1,1 @@
+x86_64-w64-mingw32-g++ main-windows.cpp -o main-windows.exe -luser32 -static-libgcc -static-libstdc++
