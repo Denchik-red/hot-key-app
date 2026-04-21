@@ -10,7 +10,7 @@ install_manifest.txt
 Makefile
 
 # Исполняемые файлы и библиотеки
-*.exe
+# *.exe
 *.dll
 *.so
 *.a
