@@ -1,1 +1,57 @@
 x86_64-w64-mingw32-g++ main-windows.cpp -o main-windows.exe -luser32 -static-libgcc -static-libstdc++
+
+cmake_minimum_required(VERSION 3.10)
+project(hot-key-app)
+
+set(CMAKE_CXX_STANDARD 17)
+
+find_package(X11 REQUIRED)
+
+add_executable(app-linux main-linux.cpp)
+target_link_libraries(app-linux PRIVATE ${X11_LIBRARIES})
+
+add_executable(app-windows main-windows.cpp)
+target_link_libraries(app-windows PRIVATE user32 gdi32)
+
+
+#include <iostream>
+#include <string>
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#include <iostream>
+#include <cstdlib>
+
+int main() {
+    Display *display = XOpenDisplay(NULL);
+    if (!display) {
+        std::cerr << "Не удалось открыть display" << std::endl;
+        return 1;
+    }
+
+    Window root = XDefaultRootWindow(display);
+    KeyCode keycode = XKeysymToKeycode(display, XStringToKeysym("L"));
+    XGrabKey(display, keycode, ControlMask, root, False, GrabModeAsync, GrabModeAsync);
+    XFlush(display);
+
+    std::cout << "Глобальный hotkey Ctrl+Y зарегистрирован. Нажмите для теста." << std::endl;
+
+    XEvent event;
+    while (true) {
+        XNextEvent(display, &event);
+        if (event.type == KeyPress)
+        {
+            std::cout << "Hotkey Ctrl+Y нажат!" << std::endl;
+            break;
+        }
+    }
+
+    XUngrabKey(display, keycode, ControlMask, root);
+    XCloseDisplay(display);
+    return 0;
+}
+
+wmctrl -m
+echo $XDG_SESSION_TYPE
+echo $XDG_CURRENT_DESKTOP
+
+dbus-send --session --dest=ru.example.Hotkey --print-reply /Hotkey ru.example.Hotkey.HandleHotkey

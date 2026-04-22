@@ -13,21 +13,18 @@ int main() {
     }
 
     Window root = XDefaultRootWindow(display);
-    KeyCode keycode = XKeysymToKeycode(display, XStringToKeysym("Y"));
+    KeyCode keycode = XKeysymToKeycode(display, XStringToKeysym("L"));
     XGrabKey(display, keycode, ControlMask, root, False, GrabModeAsync, GrabModeAsync);
     XFlush(display);
 
     std::cout << "Глобальный hotkey Ctrl+Y зарегистрирован. Нажмите для теста." << std::endl;
-
     XEvent event;
-    while (true)
-    {
+    while (true) {
         XNextEvent(display, &event);
         if (event.type == KeyPress)
         {
             std::cout << "Hotkey Ctrl+Y нажат!" << std::endl;
-            // Ваша логика здесь
-            break; // Для выхода; удалите для постоянной работы
+            break;
         }
     }
 
