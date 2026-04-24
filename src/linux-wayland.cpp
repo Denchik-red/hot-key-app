@@ -1,7 +1,6 @@
 #include <dbus/dbus.h>
 #include <iostream>
 #include <cstring> 
-
 #include <dbus/dbus.h>
 #include <iostream>
 #include <cstring>
