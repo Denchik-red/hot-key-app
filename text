@@ -55,3 +55,6 @@ echo $XDG_SESSION_TYPE
 echo $XDG_CURRENT_DESKTOP
 
 dbus-send --session --dest=ru.example.Hotkey --print-reply /Hotkey ru.example.Hotkey.HandleHotkey
+
+
+dconf write /org/gnome/settings-daemon/plugins/media-keys/custom-keybindings "['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/', '/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/my_hotkey/']"
