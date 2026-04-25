@@ -3,8 +3,7 @@
 #include <string.h>
 #include <vector>
 #include <string>
-#include <limits>
-#include "capture_key_terminal.h"
+#include "setup-hotkey-lib.h"
 
 const std::string BASE_PATH = "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings";
 bool verbose = false;
@@ -116,63 +115,22 @@ std::vector<std::string> get_user_hotkeys()
     return userHotkeys;
 }
 
-int main(int argc, char *argv[])
+int is_hotkey_exists(std::string hotkeyName)
 {
-    std::string hotkeyName = "DCustomHotkey";
-    std::string command;
-    std::string binding;
-    std::string operation = "unset";
-    for (int i = 1; i < argc; ++i)
+    const std::string Hotkey = "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/" + hotkeyName + "/";
+    std::vector<std::string> userHotkeys = get_user_hotkeys();
+    for (int i = 0; i < userHotkeys.size(); i++)
     {
-        std::string arg = argv[i];
-        if (arg == "--help" || arg == "-h")
+        if (userHotkeys[i] == Hotkey)
         {
-            std::cout << "Usage: " << argv[0] << " [--command <command>] [--binding <binding>] [--name <name>] [--operation <add|remove>] [--verbose]\n"
-                      << "  --command, -c <command>  Command to execute when the hotkey is pressed.\n"
-                      << "  --binding, -b <binding>  Hotkey binding (e.g., '<Control>y', '<Alt>y', <Control>y).\n"
-                      << "  --name, -n <name>        Name of the hotkey (default: DCustomHotkey).\n"
-                      << "  --operation, -o <add|remove|edit>  Operation to perform (add, remove or edit hotkey)."
-                      << "  --verbose Enable verbose output.\n"
-                      << std::endl;
-            return 0;
-        }
-        else if (arg == "--verbose")
-        {
-            verbose = true;
-        }
-        else if ((arg == "--command" || arg == "-c") && i + 1 < argc)
-        {
-            command = argv[++i];
-        }
-        else if ((arg == "--binding" || arg == "-b") && i + 1 < argc)
-        {
-            binding = argv[++i];
-        }
-        else if ((arg == "--name" || arg == "-n") && i + 1 < argc)
-        {
-            hotkeyName = argv[++i];
-        }
-        else if ((arg == "--operation" || arg == "-o") && i + 1 < argc)
-        {
-            operation = argv[++i];
-        }
-        else
-        {
-            std::cerr << "unknown argument: " << arg << "\n";
             return 1;
         }
     }
-    if (operation == "unset")
-    {
-        std::cout << "type of operations:\n"
-                     "add - add new hotkey\n"
-                     "remove - remove hotkey\n"
-                     "edit - edit hotkey"
-                  << std::endl;
-        std::cout << "operation: ";
-        std::cin >> operation;
-    }
+    return 0;
+}
 
+int setup_hotkey_linux(std::string command, std::string binding, std::string hotkeyName, std::string operation, bool verbose)
+{
     const std::string Hotkey = "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/" + hotkeyName + "/";
 
     if (operation == "add" || operation == "remove")
@@ -201,18 +159,6 @@ int main(int argc, char *argv[])
         }
         if (operation == "add")
         {
-            if (command.empty())
-            {
-                std::cout << "Command to execute when the hotkey is pressed:\n";
-                std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n'); // очищаем
-                std::getline(std::cin, command);
-            }
-            if (binding.empty())
-            {
-                std::cout << "Hotkey binding:\n";
-                binding = capture_key_terminal();
-                std::cout << "binding: " << binding << std::endl;
-            }
             userHotkeys.push_back(Hotkey);
             configure_hotkey(command, binding, hotkeyName, Hotkey);
             configure_hotkey_array(userHotkeys);

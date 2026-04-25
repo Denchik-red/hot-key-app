@@ -12,8 +12,12 @@ add_executable(linux-x11 src/linux-x11.cpp)
 target_include_directories(linux-x11 PRIVATE ${X11_INCLUDE_DIR})
 target_link_libraries(linux-x11 PRIVATE ${X11_LIBRARIES})
 
-add_executable(linux-wayland src/linux-wayland.cpp)
-target_include_directories(linux-wayland PRIVATE ${DBUS_INCLUDE_DIRS})
+add_executable(linux-wayland 
+    src/linux-wayland.cpp
+    src/capture_key_terminal.cpp
+    src/setup-hotkey-lib.cpp
+)
+target_include_directories(linux-wayland PRIVATE ${DBUS_INCLUDE_DIRS} ${CMAKE_CURRENT_SOURCE_DIR}/include)
 target_link_libraries(linux-wayland PRIVATE ${DBUS_LIBRARIES})
 
 add_executable(setup-hotkey-linux 
