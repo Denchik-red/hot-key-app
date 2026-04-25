@@ -1,9 +1,6 @@
 #include <dbus/dbus.h>
 #include <iostream>
 #include <cstring>
-#include <dbus/dbus.h>
-#include <iostream>
-#include <cstring>
 #include <limits>
 #include <csignal>
 #include "setup-hotkey-lib.h"
