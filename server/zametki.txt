@@ -1,0 +1,4 @@
+
+swagger:
+npm install swagger-jsdoc swagger-ui-express
+npm install -D @types/swagger-jsdoc @types/swagger-ui-express
